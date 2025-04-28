@@ -115,7 +115,6 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
     }
 
 
-
     private void setupListeners() {
         View.OnClickListener editBudgetListener = v -> showEditBudgetDialog();
         ivEditBalance.setOnClickListener(editBudgetListener);
@@ -129,6 +128,7 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
                         Intent intent = new Intent(requireContext(), BudgetDetailActivity.class);
                         startActivity(intent);
                     }
+
                     @Override
                     public void onAdClosedByUser() {
                         super.onAdClosedByUser();
@@ -156,7 +156,8 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
             return;
         }
 
-        Type type = new TypeToken<List<TransactionModel>>() {}.getType();
+        Type type = new TypeToken<List<TransactionModel>>() {
+        }.getType();
         allTransactionList = new Gson().fromJson(transactionListJson, type);
 
         if (allTransactionList == null) {
@@ -249,7 +250,8 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnSave.setOnClickListener(v -> {
-            String newBudget = inputBudget.getText().toString().replaceAll(",", "");;
+            String newBudget = inputBudget.getText().toString().replaceAll(",", "");
+            ;
             if (!newBudget.isEmpty()) {
                 double budgetAmount = Double.parseDouble(newBudget);
                 budgetManager.setTotalBudget(budgetAmount);
@@ -265,7 +267,7 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
         double remaining = totalBudget - totalExpenses;
 
         NumberFormat formatter = NumberFormat.getInstance(Locale.US);
-        tvTotalBudget.setText(currentCurrency + formatter.format(totalBudget));
+        tvTotalBudget.setText(currentCurrency + " " + formatter.format(totalBudget));
 
         tvExpenses.setText("Expenses: " + currentCurrency + formatter.format(totalExpenses));
 

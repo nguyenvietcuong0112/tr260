@@ -162,9 +162,14 @@ public class StatisticsFragment extends Fragment {
     }
 
     private void updateTransactionTypeUI() {
-        llExpend.setBackgroundResource(currentTransactionType.equals("Expense") ? R.drawable.bg_tab_item_true : R.drawable.bg_tab_item_false);
-        llIncome.setBackgroundResource(currentTransactionType.equals("Income") ? R.drawable.bg_tab_item_true : R.drawable.bg_tab_item_false);
-        llLoan.setBackgroundResource(currentTransactionType.equals("Loan") ? R.drawable.bg_tab_item_true : R.drawable.bg_tab_item_false);
+        // Get references to indicators
+        View indicatorExpense = llExpend.findViewById(R.id.indicator_expense);
+        View indicatorIncome = llIncome.findViewById(R.id.indicator_income);
+        View indicatorLoan = llLoan.findViewById(R.id.indicator_loan);
+
+        indicatorExpense.setVisibility(currentTransactionType.equals("Expense") ? View.VISIBLE : View.INVISIBLE);
+        indicatorIncome.setVisibility(currentTransactionType.equals("Income") ? View.VISIBLE : View.INVISIBLE);
+        indicatorLoan.setVisibility(currentTransactionType.equals("Loan") ? View.VISIBLE : View.INVISIBLE);
 
         ImageView ivExpend = llExpend.findViewById(R.id.iv_expend);
         TextView tvExpendLabel = llExpend.findViewById(R.id.tv_expend_label);
@@ -173,8 +178,9 @@ public class StatisticsFragment extends Fragment {
         ImageView ivLoan = llLoan.findViewById(R.id.iv_loan);
         TextView tvLoanLabel = llLoan.findViewById(R.id.tv_loan_label);
 
-        int colorActive = getResources().getColor(R.color.white);
+        int colorActive = getResources().getColor(android.R.color.black);
         int colorInactive = getResources().getColor(R.color.icon_inactive);
+
         ivExpend.setColorFilter(currentTransactionType.equals("Expense") ? colorActive : colorInactive);
         tvExpendLabel.setTextColor(currentTransactionType.equals("Expense") ? colorActive : colorInactive);
 
@@ -199,7 +205,7 @@ public class StatisticsFragment extends Fragment {
         }
 
         NumberFormat formatter = NumberFormat.getInstance(Locale.US);
-        tvTotalBalance.setText(currentCurrency + formatter.format(totalAmount));
+        tvTotalBalance.setText(currentCurrency + " "+ formatter.format(totalAmount));
         if (filteredTransactions.isEmpty() || categoryTotals.isEmpty()) {
             noDataView.setVisibility(View.VISIBLE);
             barChart.setVisibility(View.GONE);

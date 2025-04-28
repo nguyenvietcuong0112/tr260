@@ -7,43 +7,45 @@
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:fontFamily="@font/roboto_bold"
-        android:text="Budget"
-        android:textColor="#1F2124"
-        android:textSize="@dimen/_16sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/view_header_bg"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_80sdp"
-        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_height="@dimen/_100sdp"
         android:background="@drawable/bg_header_black"
-        android:layout_marginTop="@dimen/_5sdp"
         android:paddingHorizontal="@dimen/_10sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title">
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <TextView
-            android:id="@+id/tv_total_balance_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Total balance"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/_14sdp" />
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/llTotal"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/tv_total_balance_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Total"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/_14sdp" />
+            <ImageView
+                android:id="@+id/iv_edit_balance"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:src="@drawable/ic_edit_budget" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llTotal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:layout_alignParentBottom="true"
@@ -60,13 +62,7 @@
                 android:textSize="@dimen/_25sdp"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/iv_edit_balance"
-                android:layout_width="@dimen/_25sdp"
-                android:layout_height="@dimen/_25sdp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:src="@drawable/ic_edit_budget" />
+
 
         </LinearLayout>
 
