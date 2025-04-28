@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "322532820784",
+    "project_id": "tr260-money-tracker",
+    "storage_bucket": "tr260-money-tracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322532820784:android:7484540a13fe6189972af5",
+        "android_client_info": {
+          "package_name": "com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5kO60_UkDK0cCPl2rGafk9TwsU7E3HI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
