@@ -12,8 +12,8 @@ public class CircularProgressViewDetail extends View {
     private Paint paint, textPaint;
     private RectF rectF;
     private int progress = 75;
-    private int progressColor = Color.parseColor("#B8DAFF");
-    private int colorPaint = Color.parseColor("#F2F3F7");
+    private int progressColor = Color.parseColor("#BFF3C9");
+    private int colorPaint = Color.parseColor("#FFFFFF");
 
     private boolean showRemainingText = true;
 

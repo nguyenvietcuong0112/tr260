@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Money Manager: Expense Tracker</string>
+    <string name="app_name">Money Tracker: Expense Planner</string>
 
     <string-array name="months">
         <item>January</item>
@@ -16,10 +16,11 @@
         <item>December</item>
     </string-array>
 
-    <string name="note_continue1">Keep track of your spending effortlessly</string>
-    <string name="note_continue2">Get insights with detailed statistics</string>
-    <string name="note_continue3">Smart tools to grow your savings effortlessly</string>
-    <string name="note_continue4">Plan wisely and stay  financially secure</string>
+    <string name="note_continue1">Simplify your financial life with smart money tools.</string>
+    <string name="note_continue2">Visualize your expenses and income with clear reports.</string>
+    <string name="note_continue3">Stay on top of your budget and grow your savings.</string>
+    <string name="note_continue4">Set goals, track progress, and build financial habits.</string>
+
 
     <string name="note_guide1">Tap ‘Budget’ to manage your spending</string>
     <string name="note_guide2">See your remaining balance at a glance</string>

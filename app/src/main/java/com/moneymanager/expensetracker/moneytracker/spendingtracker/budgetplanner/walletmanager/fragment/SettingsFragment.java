@@ -101,7 +101,7 @@ public class SettingsFragment extends Fragment {
 
 
         btnPrivacyPolicy.setOnClickListener(v -> {
-            Uri uri = Uri.parse("https://whyteabraham.netlify.app/policy\"");
+            Uri uri = Uri.parse("https://zedappmobile.netlify.app/policy");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });

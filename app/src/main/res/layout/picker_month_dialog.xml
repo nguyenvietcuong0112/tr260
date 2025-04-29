@@ -34,7 +34,7 @@
             android:layout_gravity="center"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_left"
-            app:tint="@color/blue" />
+            app:tint="@color/green" />
 
         <TextView
             android:id="@+id/tv_year"
@@ -54,7 +54,7 @@
             android:layout_gravity="center"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_right"
-            app:tint="@color/blue" />
+            app:tint="@color/green" />
     </LinearLayout>
 
     <GridLayout
@@ -168,7 +168,7 @@
             android:layout_weight="1"
             android:textSize="@dimen/_14sdp"
             android:gravity="center"
-            android:textColor="#3151E7"
+            android:textColor="#2DB84C"
             android:fontFamily="@font/roboto_bold"
             android:background="@drawable/bg_cancel" />
 

@@ -8,16 +8,27 @@
     android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/title"
+    <RelativeLayout
+        android:id="@+id/view_header_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:fontFamily="@font/roboto_bold"
-        android:text="Settings"
-        android:textColor="#1F2124"
-        android:textSize="@dimen/_16sdp" />
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/bg_header_black"
+        android:paddingHorizontal="@dimen/_10sdp"
+        >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Settings"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp" />
+
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -69,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_11sdp"
                     android:layout_weight="4"
+                    android:fontFamily="@font/roboto_bold"
                     android:text="Currency"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
@@ -114,6 +126,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_weight="4"
                     android:text="Language"
+                    android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
                     app:layout_constraintStart_toEndOf="@+id/imageView_policy"
@@ -169,6 +182,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_weight="4"
                     android:text="Share"
+                    android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
                     app:layout_constraintStart_toEndOf="@+id/imageView_policy"
@@ -206,6 +220,7 @@
                     android:layout_weight="4"
                     android:text="Privacy policy"
                     android:textColor="@color/black"
+                    android:fontFamily="@font/roboto_bold"
                     android:textSize="@dimen/_12sdp"
                     app:layout_constraintStart_toEndOf="@+id/imageView_policy"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -243,6 +258,7 @@
                     android:layout_marginStart="12dp"
                     android:layout_weight="4"
                     android:text="Rating"
+                    android:fontFamily="@font/roboto_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp"
                     app:layout_constraintStart_toEndOf="@+id/imageView_policy"

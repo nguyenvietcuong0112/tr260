@@ -20,7 +20,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#007AFF"
+                android:background="#2DB84C"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginHorizontal="@dimen/_12sdp"
-                    android:background="#007AFF"
+                    android:background="#2DB84C"
                     android:paddingVertical="15dp">
 
                     <ImageView
