@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="12dp"
-        android:text="Categories"
+        android:text="Category"
         android:textColor="@color/black"
         android:fontFamily="@font/roboto_bold"
         android:textSize="@dimen/_18sdp"
