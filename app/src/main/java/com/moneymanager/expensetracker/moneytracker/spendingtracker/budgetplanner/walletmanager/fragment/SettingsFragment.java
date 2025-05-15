@@ -5,17 +5,24 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
+import com.mallegan.ads.callback.NativeCallback;
+import com.mallegan.ads.util.Admob;
 import com.mallegan.ads.util.AppOpenManager;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.R;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity.BudgetDetailActivity;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity.CurrencyUnitActivity;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity.LanguageActivity;
@@ -31,7 +38,8 @@ public class SettingsFragment extends Fragment {
 
     TextView tvCurrency;
 
-    LinearLayout btnShare,btnLanguage,btnRateUs,btnPrivacyPolicy,llCurrency;
+    LinearLayout btnShare, btnLanguage, btnRateUs, btnPrivacyPolicy, llCurrency;
+    FrameLayout frAds;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,11 +58,40 @@ public class SettingsFragment extends Fragment {
         btnPrivacyPolicy = view.findViewById(R.id.btn_privacy_policy);
         btnRateUs = view.findViewById(R.id.btn_rate_us);
         llCurrency = view.findViewById(R.id.llCurrency);
+        frAds = view.findViewById(R.id.fr_ads);
 
         tvCurrency = view.findViewById(R.id.tv_currency);
         tvCurrency.setText(currentCurrency);
 
         updateCurrencyDisplay();
+        loadAds();
+    }
+
+    private void loadAds() {
+        if (!SharePreferenceUtils.isOrganic(requireContext())) {
+            Admob.getInstance().loadNativeAd(requireContext(), getString(R.string.native_settings), new NativeCallback() {
+                @Override
+                public void onNativeAdLoaded(NativeAd nativeAd) {
+                    super.onNativeAdLoaded(nativeAd);
+                    NativeAdView adView = (NativeAdView) LayoutInflater.from(requireActivity())
+                            .inflate(R.layout.ad_native_admob_banner_3, null);
+
+                    frAds.removeAllViews();
+                    frAds.addView(adView);
+                    Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+                }
+
+                @Override
+                public void onAdFailedToLoad() {
+                    super.onAdFailedToLoad();
+                    frAds.setVisibility(View.GONE);
+                }
+            });
+
+        } else {
+            frAds.removeAllViews();
+        }
+
 
     }
 
@@ -101,7 +138,7 @@ public class SettingsFragment extends Fragment {
 
 
         btnPrivacyPolicy.setOnClickListener(v -> {
-            Uri uri = Uri.parse("https://whyteabraham.netlify.app/policy\"");
+            Uri uri = Uri.parse("https://zedappmobile.netlify.app/policy");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });

@@ -91,19 +91,19 @@ public class SplashActivity extends BaseActivity {
 //
             }
 
-            @Override
-            public void onAdClosedByUser() {
-                super.onAdClosedByUser();
-                if (!SharePreferenceUtils.isOrganic(SplashActivity.this) && counterValue >= 2) {
-                    Intent intent = new Intent(SplashActivity.this, LoadNativeFull.class);
-                    intent.putExtra(LoadNativeFull.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_intro));
-                    startActivity(intent);
-                } else {
-                    finish();
-                }
-
-
-            }
+//            @Override
+//            public void onAdClosedByUser() {
+//                super.onAdClosedByUser();
+//                if (!SharePreferenceUtils.isOrganic(SplashActivity.this) && counterValue >= 2) {
+//                    Intent intent = new Intent(SplashActivity.this, LoadNativeFull.class);
+//                    intent.putExtra(LoadNativeFull.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_intro));
+//                    startActivity(intent);
+//                } else {
+//                    finish();
+//                }
+//
+//
+//            }
         };
 
         ConsentHelper consentHelper = ConsentHelper.getInstance(this);

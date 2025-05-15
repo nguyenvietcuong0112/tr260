@@ -12,7 +12,7 @@ public class CircularProgressView extends View {
     private Paint paint, textPaint;
     private RectF rectF;
     private int progress = 75;
-    private int progressColor = Color.parseColor("#B8DAFF");
+    private int progressColor = Color.parseColor("#BFF3C9");
 
     private boolean showRemainingText = true;
 
@@ -53,7 +53,6 @@ public class CircularProgressView extends View {
         paint.setColor(Color.WHITE);
         canvas.drawArc(rectF, 0, 360, false, paint);
 
-        // Vẽ tiến trình (màu xanh lam)
         paint.setColor(progressColor);
         float sweepAngle = (360f * progress) / 100;
         canvas.drawArc(rectF, -90, sweepAngle, false, paint);

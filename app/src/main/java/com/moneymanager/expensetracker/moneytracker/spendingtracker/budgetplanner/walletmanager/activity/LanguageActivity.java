@@ -96,7 +96,7 @@ public class LanguageActivity extends BaseActivity  implements UILanguageCustom.
 //                        sharePreferenceUtils = new SharePreferenceUtils(this);
 //                        int counterValue = sharePreferenceUtils.getCurrentValue();
 //                        if (counterValue == 0) {
-                            startActivity(new Intent(LanguageActivity.this, IntroActivity.class));
+                        startActivity(new Intent(LanguageActivity.this, IntroActivity.class));
 //                        } else {
 //                            startActivity(new Intent(LanguageActivity.this, MainActivity.class));
 //                        }

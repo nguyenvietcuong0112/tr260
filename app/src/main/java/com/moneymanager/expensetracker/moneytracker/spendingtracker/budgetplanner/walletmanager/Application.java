@@ -115,7 +115,6 @@ import com.mallegan.ads.util.AppOpenManager;
 import com.mallegan.ads.util.AppsFlyer;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.AppActivityTracker;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
-import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.TimerManager;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity.IntroActivity;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity.LanguageActivity;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity.SplashActivity;
@@ -189,11 +188,6 @@ public class Application extends AdsApplication {
         AppActivityTracker.getInstance().register(this);
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        TimerManager.getInstance().stopTimer();
-    }
 
 
 }

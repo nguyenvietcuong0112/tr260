@@ -94,30 +94,38 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_banner"
+    <FrameLayout
+        android:id="@+id/frAdsCollap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/view_header_bg"
-        >
+        app:layout_constraintBottom_toTopOf="@id/view"
+        app:layout_constraintTop_toBottomOf="@+id/view_header_bg">
 
-        <include
-            android:id="@+id/banner"
-            layout="@layout/layout_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
 
-            />
-    </LinearLayout>
+        <include layout="@layout/ads_shimmer_native_no_media" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frAdsHomeTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/view"
+        app:layout_constraintTop_toBottomOf="@+id/view_header_bg">
+
+    </FrameLayout>
     <LinearLayout
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
         android:padding="24dp"
-        app:layout_constraintTop_toBottomOf="@id/ll_banner"
-       >
+        app:layout_constraintTop_toBottomOf="@id/frAdsHomeTop"
+        >
 
         <com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.CircularProgressView
             android:id="@+id/main_progress_view"

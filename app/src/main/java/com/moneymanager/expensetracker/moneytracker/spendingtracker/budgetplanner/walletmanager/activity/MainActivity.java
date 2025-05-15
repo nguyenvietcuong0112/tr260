@@ -17,11 +17,9 @@ import com.google.gson.Gson;
 import com.mallegan.ads.callback.InterCallback;
 import com.mallegan.ads.util.Admob;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.R;
-import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.AssistiveTouch;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.Constant;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.LoadNativeFullNew;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
-import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.TimerManager;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.TransactionUpdateEvent;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.fragment.BudgetFragment;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.fragment.HomeFragment;
@@ -34,7 +32,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 import io.ak1.BubbleTabBar;
-import io.ak1.OnBubbleClickListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
         loadInterNavBar();
         loadInterAddTrans();
 
-        if (!SharePreferenceUtils.isOrganic(this)) {
-            TimerManager.getInstance().startTimer();
-        }
+//        if (!SharePreferenceUtils.isOrganic(this)) {
+//            TimerManager.getInstance().startTimer();
+//        }
     }
 
     private void initializeViews() {
@@ -303,17 +300,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!SharePreferenceUtils.isOrganic(this)) {
-            TimerManager.getInstance().startTimer();
-        }
+//        if (!SharePreferenceUtils.isOrganic(this)) {
+//            TimerManager.getInstance().startTimer();
+//        }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TimerManager.getInstance().stopTimer();
-
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        TimerManager.getInstance().stopTimer();
+//
+//    }
 
     private void loadInterAddTrans() {
         if (!SharePreferenceUtils.isOrganic(MainActivity.this)) {
@@ -330,7 +327,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();
+        CustomBottomSheetDialogExitFragment dialog = CustomBottomSheetDialogExitFragment.newInstance();
+        dialog.show(getSupportFragmentManager(), "ExitDialog");
+
     }
 }

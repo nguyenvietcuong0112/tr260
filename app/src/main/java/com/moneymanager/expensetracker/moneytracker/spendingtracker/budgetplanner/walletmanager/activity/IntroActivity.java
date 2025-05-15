@@ -61,10 +61,19 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
         loadNativeIntro2();
         loadNative3();
         loadNative4();
+        loadBanner();
+
+    }
+
+    private void loadBanner() {
         if (!SharePreferenceUtils.isOrganic(this)) {
-            Admob.getInstance().loadInlineBanner(this, getString(R.string.banner_inline_intro), Admob.BANNER_INLINE_LARGE_STYLE);
+            Admob.getInstance().loadCollapsibleBanner(
+                    this,
+                    getString(R.string.banner_collapse_intro),
+                    "top"
+            );
         } else {
-            binding.adCardView.setVisibility(View.GONE);
+            binding.llBanner.removeAllViews();
         }
     }
 
@@ -92,16 +101,39 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
     public void goToHome() {
         String selectedCurrencyCode = SharePreferenceUtils.getSelectedCurrencyCode(this);
         if (selectedCurrencyCode.isEmpty()) {
-            startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+
+            if (!SharePreferenceUtils.isOrganic(IntroActivity.this)) {
+                Admob.getInstance().loadSplashInterAds2(IntroActivity.this, getString(R.string.inter_intro), 0, new InterCallback() {
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        Intent intent = new Intent(IntroActivity.this, CurrencyUnitActivity.class);
+                        intent.putExtra(LoadNativeFull.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_intro));
+                        startActivity(intent);
+                    }
+                });
+            } else {
+                startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+
+            }
+
         } else {
             if (!SharePreferenceUtils.isOrganic(IntroActivity.this)) {
-                Admob.getInstance().loadSplashInterAds2(IntroActivity.this, getString(R.string.inter_intro), 0,new InterCallback() {
+                Admob.getInstance().loadSplashInterAds2(IntroActivity.this, getString(R.string.inter_intro), 0, new InterCallback() {
                     @Override
                     public void onNextAction() {
                         super.onNextAction();
                         Intent intent = new Intent(IntroActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
+
                     @Override
                     public void onAdClosedByUser() {
                         super.onAdClosedByUser();

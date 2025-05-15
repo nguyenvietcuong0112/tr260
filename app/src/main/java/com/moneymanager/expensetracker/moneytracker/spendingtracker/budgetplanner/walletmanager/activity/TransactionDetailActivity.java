@@ -71,9 +71,12 @@ public class TransactionDetailActivity extends AppCompatActivity {
                     @Override
                     public void onAdClosedByUser() {
                         super.onAdClosedByUser();
-                        Intent intent = new Intent(TransactionDetailActivity.this, LoadNativeFullNew.class);
-                        intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_edit_transaction));
-                        startActivity(intent);
+                        if(!SharePreferenceUtils.isOrganic(getApplicationContext())) {
+                            Intent intent = new Intent(TransactionDetailActivity.this, LoadNativeFullNew.class);
+                            intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_edit_transaction));
+                            startActivity(intent);
+                        }
+
                     }
                 });
             } else {

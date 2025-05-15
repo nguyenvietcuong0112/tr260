@@ -27,7 +27,7 @@
     <color name="icon_active">@color/blue</color>
     <color name="background_color">#FFFFFF</color>
     <!-- res/values/colors.xml -->
-    <color name="bubble_selected_color">#007AFF</color> <!-- Màu nền khi chọn -->
+    <color name="bubble_selected_color">#2DB84C</color> <!-- Màu nền khi chọn -->
     <color name="bubble_unselected_color">#46484B</color> <!-- Màu icon khi không chọn -->
     <color name="bubble_selected_text_color">#FFFFFF</color> <!-- Màu chữ khi chọn -->
     <color name="background">#F3F3F3</color>

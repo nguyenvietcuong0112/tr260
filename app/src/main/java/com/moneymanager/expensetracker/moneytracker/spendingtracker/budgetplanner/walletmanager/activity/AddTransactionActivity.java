@@ -55,18 +55,20 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private SharePreferenceUtils sharePreferenceUtils;
 
-    private TextView  tvCurrency;
+    private TextView tvCurrency;
     private LinearLayout rbExpend, rbIncome, rbLoan;
     private EditText etAmount, etNote, etLender;
     private Spinner spBudget;
     private LinearLayout btnDate, btnTime;
     private TextView tv_date, tvTime;
 
-//    private RecyclerView rvCategories;
+    //    private RecyclerView rvCategories;
     private LinearLayout layoutLender, layoutBudget;
     private String currentTransactionType = "Expense";
     private int colorActive, colorInactive;
-    private ImageView ivExpend, ivIncome, ivLoan,tvCancel,tvSave;
+    private ImageView ivExpend, ivIncome, ivLoan, tvCancel;
+
+    private LinearLayout tvSave;
     private TextView tvExpendLabel, tvIncomeLabel, tvLoanLabel;
 
     private String transactionType = "Expense";
@@ -87,6 +89,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private View categoryView;
     private TextView tvSelectedCategory;
     private ImageView ivSelectedCategoryIcon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,7 +202,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private void initViews() {
         tvCancel = findViewById(R.id.tv_cancel);
-        tvSave = findViewById(R.id.tv_save);
+        tvSave = findViewById(R.id.ll_save);
         rbExpend = findViewById(R.id.ll_expend);
         rbIncome = findViewById(R.id.ll_income);
         rbLoan = findViewById(R.id.ll_loan);
@@ -233,11 +236,10 @@ public class AddTransactionActivity extends AppCompatActivity {
         ivLoan = rbLoan.findViewById(R.id.iv_loan);
         tvLoanLabel = rbLoan.findViewById(R.id.tv_loan_label);
 
-        colorActive = getResources().getColor(R.color.white);
+
+        colorActive = getResources().getColor(android.R.color.black);
         colorInactive = getResources().getColor(R.color.icon_inactive);
-        rbExpend.setBackgroundResource(R.drawable.bg_tab_item_true);
-        rbIncome.setBackgroundResource(R.drawable.bg_tab_item_false);
-        rbLoan.setBackgroundResource(R.drawable.bg_tab_item_false);
+
 
         updateTabColors("Expense");
         configAmount();
@@ -352,14 +354,14 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void updateTabColors(String selectedType) {
         currentTransactionType = selectedType;
 
-        ivExpend.setColorFilter(selectedType.equals("Expense") ? colorActive : colorInactive);
-        tvExpendLabel.setTextColor(selectedType.equals("Expense") ? colorActive : colorInactive);
+        ivExpend.setColorFilter(currentTransactionType.equals("Expense") ? colorActive : colorInactive);
+        tvExpendLabel.setTextColor(currentTransactionType.equals("Expense") ? colorActive : colorInactive);
 
-        ivIncome.setColorFilter(selectedType.equals("Income") ? colorActive : colorInactive);
-        tvIncomeLabel.setTextColor(selectedType.equals("Income") ? colorActive : colorInactive);
+        ivIncome.setColorFilter(currentTransactionType.equals("Income") ? colorActive : colorInactive);
+        tvIncomeLabel.setTextColor(currentTransactionType.equals("Income") ? colorActive : colorInactive);
 
-        ivLoan.setColorFilter(selectedType.equals("Loan") ? colorActive : colorInactive);
-        tvLoanLabel.setTextColor(selectedType.equals("Loan") ? colorActive : colorInactive);
+        ivLoan.setColorFilter(currentTransactionType.equals("Loan") ? colorActive : colorInactive);
+        tvLoanLabel.setTextColor(currentTransactionType.equals("Loan") ? colorActive : colorInactive);
     }
 
     private void setupListeners() {
@@ -376,9 +378,12 @@ public class AddTransactionActivity extends AppCompatActivity {
                     @Override
                     public void onAdClosedByUser() {
                         super.onAdClosedByUser();
-                        Intent intent = new Intent(AddTransactionActivity.this, LoadNativeFullNew.class);
-                        intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_add_transaction));
-                        startActivity(intent);
+                        if (!SharePreferenceUtils.isOrganic(getApplicationContext())) {
+                            Intent intent = new Intent(AddTransactionActivity.this, LoadNativeFullNew.class);
+                            intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_add_transaction));
+                            startActivity(intent);
+                        }
+
                     }
                 });
             } else {
@@ -388,27 +393,18 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
 
         rbExpend.setOnClickListener(v -> {
-            rbExpend.setBackgroundResource(R.drawable.bg_tab_item_true);
-            rbIncome.setBackgroundResource(R.drawable.bg_tab_item_false);
-            rbLoan.setBackgroundResource(R.drawable.bg_tab_item_false);
             updateTabColors("Expense");
             updateTabSelection(rbExpend);
             selectTransactionType("Expense");
         });
 
         rbIncome.setOnClickListener(v -> {
-            rbExpend.setBackgroundResource(R.drawable.bg_tab_item_false);
-            rbIncome.setBackgroundResource(R.drawable.bg_tab_item_true);
-            rbLoan.setBackgroundResource(R.drawable.bg_tab_item_false);
             updateTabColors("Income");
             updateTabSelection(rbIncome);
             selectTransactionType("Income");
         });
 
         rbLoan.setOnClickListener(v -> {
-            rbExpend.setBackgroundResource(R.drawable.bg_tab_item_false);
-            rbIncome.setBackgroundResource(R.drawable.bg_tab_item_false);
-            rbLoan.setBackgroundResource(R.drawable.bg_tab_item_true);
 
             updateTabColors("Loan");
 

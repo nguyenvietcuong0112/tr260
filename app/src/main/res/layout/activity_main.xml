@@ -19,7 +19,7 @@
     <LinearLayout
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/_70sdp"
         android:background="@color/white"
         android:orientation="horizontal"
         android:paddingVertical="@dimen/_10sdp"

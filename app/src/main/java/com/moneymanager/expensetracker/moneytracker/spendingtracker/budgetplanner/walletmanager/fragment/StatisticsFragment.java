@@ -1,16 +1,20 @@
 package com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,8 +31,12 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mallegan.ads.callback.NativeCallback;
 import com.mallegan.ads.util.Admob;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.R;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
@@ -61,7 +69,21 @@ public class StatisticsFragment extends Fragment {
     ImageView nextStatistic;
     LinearLayout llBanner;
     private LinearLayout noDataView;
+    private boolean isFirstLoad = true;
 
+    private Handler handler = new Handler();
+
+    FrameLayout frAdsHomeTop;
+
+    FrameLayout frAdsCollap;
+
+    private Runnable loadTask = new Runnable() {
+        @Override
+        public void run() {
+            loadNativeExpnad();
+            handler.postDelayed(this, 10000);
+        }
+    };
 
     @Nullable
     @Override
@@ -71,7 +93,6 @@ public class StatisticsFragment extends Fragment {
         loadTransactionData();
         setupClickListeners();
         setupInitialFilter();
-        loadBanner(view);
 
         return view;
     }
@@ -91,21 +112,10 @@ public class StatisticsFragment extends Fragment {
         nextStatistic = view.findViewById(R.id.next_statistic);
         llBanner = view.findViewById(R.id.ll_banner);
         noDataView = view.findViewById(R.id.layout_no_data);
-
+        frAdsHomeTop = view.findViewById(R.id.frAdsHomeTop);
+        frAdsCollap = view.findViewById(R.id.frAdsCollap);
     }
 
-    private void loadBanner(View view) {
-        if (!SharePreferenceUtils.isOrganic(getContext())) {
-            Admob.getInstance().loadCollapsibleBannerFragment(
-                    requireActivity(),
-                    getString(R.string.banner_collap),
-                    view,
-                    "top"
-            );
-        } else {
-            llBanner.setVisibility(View.GONE);
-        }
-    }
 
 
     private void loadTransactionData() {
@@ -472,6 +482,69 @@ public class StatisticsFragment extends Fragment {
 
     }
 
+    private void loadNativeCollap(@Nullable final Runnable onLoaded) {
+        Log.d("Truowng", "loadNativeCollapA: ");
+        frAdsHomeTop.removeAllViews();
+        Admob.getInstance().loadNativeAd(requireContext(), getString(R.string.native_collap_home), new NativeCallback() {
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                NativeAdView adView = (NativeAdView) LayoutInflater.from(requireContext()).inflate(R.layout.layout_native_home_collap, null);
+                frAdsCollap.removeAllViews();
+                frAdsCollap.addView(adView);
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+                if (onLoaded != null) {
+                    onLoaded.run();
+                }
+
+            }
+
+            @Override
+            public void onAdFailedToLoad() {
+                frAdsCollap.removeAllViews();
+                if (onLoaded != null) {
+                    onLoaded.run();
+                }
+            }
+        });
+    }
+
+
+    private void loadNativeExpnad() {
+        if (!isAdded()) return;
+
+        Log.d("Truong", "loadNativeCollapB: ");
+        Context context = requireContext();
+
+        Admob.getInstance().loadNativeAd(context, getString(R.string.native_expand_home), new NativeCallback() {
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                if (!isAdded()) return;
+
+                Context context = requireContext();
+                NativeAdView adView = (NativeAdView) LayoutInflater.from(context).inflate(R.layout.layout_native_home_expnad, null);
+
+                frAdsHomeTop.removeAllViews();
+
+                MediaView mediaView = adView.findViewById(R.id.ad_media);
+                ImageView closeButton = adView.findViewById(R.id.close);
+                closeButton.setOnClickListener(v -> {
+                    mediaView.performClick();
+                });
+
+                Log.d("Truong", "onNativeAdLoaded: ");
+                frAdsHomeTop.addView(adView);
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+            }
+
+            @Override
+            public void onAdFailedToLoad() {
+                if (isAdded()) {
+                    frAdsHomeTop.removeAllViews();
+                }
+            }
+        });
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -479,5 +552,20 @@ public class StatisticsFragment extends Fragment {
         allTransactionList = preferenceUtils.getTransactionList();
         loadTransactionData();
         updateStatistics();
+        if (!SharePreferenceUtils.isOrganic(requireContext())) {
+            if (isFirstLoad) {
+                loadNativeCollap(() -> handler.postDelayed(() -> {
+                    loadNativeExpnad();
+                    handler.postDelayed(loadTask, 15000);
+                    isFirstLoad = false;
+                }, 1000));
+            } else {
+                loadNativeCollap(null);
+                handler.postDelayed(loadTask, 15000);
+            }
+        } else {
+            frAdsHomeTop.removeAllViews();
+            frAdsCollap.removeAllViews();
+        }
     }
 }
