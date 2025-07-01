@@ -40,14 +40,14 @@ public class SplashActivity extends BaseActivity {
         setContentView(activitySplashBinding.getRoot());
 
         new Thread(() -> {
-            for (int progress = 0; progress <= 95; progress++) {
+            for (int progress = 0; progress <= 99; progress++) {
                 final int currentProgress = progress;
                 runOnUiThread(() -> {
                     activitySplashBinding.progressBar.setProgress(currentProgress);
                     activitySplashBinding.tvLoading.setText(currentProgress + "%");
                 });
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(150);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

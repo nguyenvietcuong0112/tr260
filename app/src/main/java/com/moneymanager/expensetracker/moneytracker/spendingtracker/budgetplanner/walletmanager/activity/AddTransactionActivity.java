@@ -89,6 +89,8 @@ public class AddTransactionActivity extends AppCompatActivity {
     private View categoryView;
     private TextView tvSelectedCategory;
     private ImageView ivSelectedCategoryIcon;
+    private FrameLayout frAdsBanner;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +123,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
         loadPreviousData();
         loadAds();
-        loadInterAddTrans();
+        loadAdsBanner();
+
     }
 
     private void loadTransactionData(TransactionModel transaction) {
@@ -218,6 +221,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 //        rvCategories = findViewById(R.id.rv_categories);
         layoutLender = findViewById(R.id.layout_lender);
         layoutBudget = findViewById(R.id.layout_budget);
+        frAdsBanner = findViewById(R.id.fr_ads_banner);
 
         categoryView = findViewById(R.id.category_view);
         tvSelectedCategory = findViewById(R.id.tv_selected_category);
@@ -267,6 +271,28 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onAdFailedToLoad() {
                 super.onAdFailedToLoad();
                 frAds.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void loadAdsBanner() {
+
+        Admob.getInstance().loadNativeAd(this, getString(R.string.native_banner_add_transaction), new NativeCallback() {
+            @Override
+            public void onNativeAdLoaded(NativeAd nativeAd) {
+                super.onNativeAdLoaded(nativeAd);
+                NativeAdView adView = (NativeAdView) LayoutInflater.from(AddTransactionActivity.this).inflate(R.layout.ad_native_admob_banner_1, null);
+                frAdsBanner.setVisibility(View.VISIBLE);
+                frAdsBanner.removeAllViews();
+                frAdsBanner.addView(adView);
+                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
+            }
+
+            @Override
+            public void onAdFailedToLoad() {
+                super.onAdFailedToLoad();
+                frAdsBanner.setVisibility(View.GONE);
             }
         });
 
@@ -367,29 +393,8 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void setupListeners() {
         tvCancel.setOnClickListener(view -> onBackPressed());
         tvSave.setOnClickListener(view -> {
-            if (Constant.interSaveTransaction != null) {
-                Admob.getInstance().showInterAds(AddTransactionActivity.this, Constant.interSaveTransaction, new InterCallback() {
-                    @Override
-                    public void onNextAction() {
-                        super.onNextAction();
-                        saveTransactionData();
-                    }
 
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        if (!SharePreferenceUtils.isOrganic(getApplicationContext())) {
-                            Intent intent = new Intent(AddTransactionActivity.this, LoadNativeFullNew.class);
-                            intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_add_transaction));
-                            startActivity(intent);
-                        }
-
-                    }
-                });
-            } else {
-                saveTransactionData();
-
-            }
+            saveTransactionData();
         });
 
         rbExpend.setOnClickListener(v -> {
@@ -655,14 +660,5 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
     }
 
-    private void loadInterAddTrans() {
-        Admob.getInstance().loadInterAds(this, getString(R.string.inter_save_transaction), new InterCallback() {
-            @Override
-            public void onInterstitialLoad(InterstitialAd interstitialAd) {
-                super.onInterstitialLoad(interstitialAd);
-                Constant.interSaveTransaction = interstitialAd;
-            }
-        });
-    }
 
 }

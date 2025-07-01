@@ -1,24 +1,34 @@
 package com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.activity;
 
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.mallegan.ads.callback.NativeCallback;
 import com.mallegan.ads.util.Admob;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.R;
-import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
-import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SystemConfiguration;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.base.BaseActivity;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.databinding.ActivityNativeFullBinding;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.CountdownView;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SystemConfiguration;
 
 public class ActivityLoadNativeFull extends BaseActivity {
     ActivityNativeFullBinding binding;
     private SharePreferenceUtils sharePreferenceUtils;
+    private CountDownTimer countDownTimer;
+    private ValueAnimator animator;
+    private boolean isAdClicked = false;
 
     @Override
     public void bind() {
@@ -46,7 +56,22 @@ public class ActivityLoadNativeFull extends BaseActivity {
                         .inflate(R.layout.native_full_language, null);
 
                 ImageView closeButton = adView.findViewById(R.id.close);
+                closeButton.setVisibility(View.VISIBLE);
+                @SuppressLint("CutPasteId") TextView tvCountdown = adView.findViewById(R.id.tvCountdown);
+                @SuppressLint("CutPasteId") CountdownView progressStroke = adView.findViewById(R.id.progressStroke);
+                MediaView mediaView = adView.findViewById(R.id.ad_media);
+                FrameLayout frCountDown = adView.findViewById(R.id.frCountdown);
+
+
+                View.OnClickListener adClickListener = v -> {
+                    isAdClicked = true;
+                    stopCountdown();
+                };
+                mediaView.setOnClickListener(adClickListener);
+
+
                 closeButton.setOnClickListener(v -> {
+                    mediaView.performClick();
 
                     sharePreferenceUtils = new SharePreferenceUtils(getApplicationContext());
                     int counterValue = sharePreferenceUtils.getCurrentValue();
@@ -68,5 +93,13 @@ public class ActivityLoadNativeFull extends BaseActivity {
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
             }
         });
+    }
+    private void stopCountdown() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        if (animator != null) {
+            animator.end();
+        }
     }
 }

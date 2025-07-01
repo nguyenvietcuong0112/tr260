@@ -24,11 +24,11 @@
             </intent-filter>
 
         </activity>
-
         <activity
-            android:name=".activity.GuideActivity"
+            android:name=".ads.ActivityLoadNativeFullV2"
             android:theme="@style/Theme.Design.NoActionBar"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".activity.InterestActivity"
             android:theme="@style/Theme.Design.NoActionBar"

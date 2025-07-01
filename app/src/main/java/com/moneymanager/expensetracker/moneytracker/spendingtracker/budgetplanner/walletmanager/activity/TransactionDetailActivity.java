@@ -50,44 +50,18 @@ public class TransactionDetailActivity extends AppCompatActivity {
         setupEditButton();
 
         loadAds();
-        loadInterEditDetail();
     }
 
     private void setupEditButton() {
         tvEdit.setOnClickListener(v -> {
-            if (Constant.interEditTransaction != null) {
-                Admob.getInstance().showInterAds(TransactionDetailActivity.this, Constant.interEditTransaction, new InterCallback() {
-                    @Override
-                    public void onNextAction() {
-                        super.onNextAction();
-                        if (indexToDelete == -1) {
-                            findTransactionIndex();
-                        }
-                        Intent intent = new Intent(TransactionDetailActivity.this, AddTransactionActivity.class);
-                        intent.putExtra("transaction", transaction);
-                        intent.putExtra("position", indexToDelete);
-                        startActivityForResult(intent, 1);
-                    }
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        if(!SharePreferenceUtils.isOrganic(getApplicationContext())) {
-                            Intent intent = new Intent(TransactionDetailActivity.this, LoadNativeFullNew.class);
-                            intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_edit_transaction));
-                            startActivity(intent);
-                        }
 
-                    }
-                });
-            } else {
-                if (indexToDelete == -1) {
-                    findTransactionIndex();
-                }
-                Intent intent = new Intent(TransactionDetailActivity.this, AddTransactionActivity.class);
-                intent.putExtra("transaction", transaction);
-                intent.putExtra("position", indexToDelete);
-                startActivityForResult(intent, 1);
+            if (indexToDelete == -1) {
+                findTransactionIndex();
             }
+            Intent intent = new Intent(TransactionDetailActivity.this, AddTransactionActivity.class);
+            intent.putExtra("transaction", transaction);
+            intent.putExtra("position", indexToDelete);
+            startActivityForResult(intent, 1);
 
 
         });
@@ -288,16 +262,6 @@ public class TransactionDetailActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void loadInterEditDetail() {
-            Admob.getInstance().loadInterAds(this, getString(R.string.inter_edit_transaction), new InterCallback() {
-                @Override
-                public void onInterstitialLoad(InterstitialAd interstitialAd) {
-                    super.onInterstitialLoad(interstitialAd);
-                    Constant.interEditTransaction = interstitialAd;
-                }
-            });
-        }
 
 
 }

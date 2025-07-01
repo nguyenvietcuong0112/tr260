@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,11 +84,13 @@ public class HomeFragment extends Fragment {
     boolean isBalanceVisible = true;
     private boolean isFirstLoad = true;
 
-    private Handler handler = new Handler();
 
     FrameLayout frAdsHomeTop;
 
     FrameLayout frAdsCollap;
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable delayedLoadExpandTask;
 
     private Runnable loadTask = new Runnable() {
         @Override
@@ -619,20 +622,43 @@ public class HomeFragment extends Fragment {
 
         if (!SharePreferenceUtils.isOrganic(requireContext())) {
             if (isFirstLoad) {
-                loadNativeCollap(() -> handler.postDelayed(() -> {
-                    loadNativeExpnad();
-                    handler.postDelayed(loadTask, 15000);
-                    isFirstLoad = false;
-                }, 1000));
+                loadNativeCollap(() -> {
+                    delayedLoadExpandTask = new Runnable() {
+                        @Override
+                        public void run() {
+                            loadNativeExpnad();
+                            isFirstLoad = false;
+                        }
+                    };
+                    handler.postDelayed(delayedLoadExpandTask, 1000);
+                });
             } else {
-                loadNativeCollap(null);
-                handler.postDelayed(loadTask, 15000);
+                loadNativeCollap(() -> {
+                    delayedLoadExpandTask = new Runnable() {
+                        @Override
+                        public void run() {
+                            loadNativeExpnad();
+                        }
+                    };
+                    handler.postDelayed(delayedLoadExpandTask, 10000);
+                });
             }
         } else {
-            frAdsHomeTop.removeAllViews();
             frAdsCollap.removeAllViews();
+            frAdsHomeTop.removeAllViews();
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(loadTask);
+        if (delayedLoadExpandTask != null) {
+            handler.removeCallbacks(delayedLoadExpandTask);
+            delayedLoadExpandTask = null;
+        }
+    }
+
 
     private void loadNativeCollap(@Nullable final Runnable onLoaded) {
         Log.d("Truowng", "loadNativeCollapA: ");
@@ -662,15 +688,15 @@ public class HomeFragment extends Fragment {
 
 
     private void loadNativeExpnad() {
-        if (!isAdded()) return; // Tránh gọi khi Fragment chưa gắn vào Activity
+        if (!isAdded()) return;
 
-        Log.d("Truong", "loadNativeCollapB: ");
-        Context context = requireContext(); // an toàn sau khi isAdded()
+        Log.d("homefragggggggggg", "loadNativeCollapB: ");
+        Context context = requireContext();
 
         Admob.getInstance().loadNativeAd(context, getString(R.string.native_expand_home), new NativeCallback() {
             @Override
             public void onNativeAdLoaded(NativeAd nativeAd) {
-                if (!isAdded()) return; // Fragment có thể đã bị detach khi callback đến
+                if (!isAdded()) return;
 
                 Context context = requireContext();
                 NativeAdView adView = (NativeAdView) LayoutInflater.from(context).inflate(R.layout.layout_native_home_expnad, null);

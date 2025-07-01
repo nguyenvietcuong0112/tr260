@@ -79,34 +79,6 @@ public class StatisticDetailActivity extends AppCompatActivity {
         ivBack.setOnClickListener(v -> onBackPressed());
     }
 
-    private void loadAds() {
-        Admob.getInstance().loadNativeAd(this, getString(R.string.native_total_balance), new NativeCallback() {
-            @Override
-            public void onNativeAdLoaded(NativeAd nativeAd) {
-                super.onNativeAdLoaded(nativeAd);
-                NativeAdView adView;
-                if (SharePreferenceUtils.isOrganic(StatisticDetailActivity.this)) {
-                    adView = (NativeAdView) LayoutInflater.from(StatisticDetailActivity.this)
-                            .inflate(R.layout.layout_native_language, null);
-                } else {
-                    adView = (NativeAdView) LayoutInflater.from(StatisticDetailActivity.this)
-                            .inflate(R.layout.layout_native_language_non_organic, null);
-                }
-                frAds.removeAllViews();
-                frAds.addView(adView);
-                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
-            }
-
-            @Override
-            public void onAdFailedToLoad() {
-                super.onAdFailedToLoad();
-                frAds.setVisibility(View.GONE);
-            }
-        });
-
-
-    }
-
 
     private void loadTransactionData() {
         allTransactionList.clear();

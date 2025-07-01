@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -63,11 +64,13 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
     LinearLayout llBanner;
     private boolean isFirstLoad = true;
 
-    private Handler handler = new Handler();
 
     FrameLayout frAdsHomeTop;
 
     FrameLayout frAdsCollap;
+
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable delayedLoadExpandTask;
 
     private Runnable loadTask = new Runnable() {
         @Override
@@ -85,7 +88,6 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
         loadTransactionData();
         setupListeners();
         updateUI();
-        loadInterBudgetDetail();
         return view;
     }
 
@@ -104,21 +106,6 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
     }
 
 
-
-    private void loadInterBudgetDetail() {
-        if (!SharePreferenceUtils.isOrganic(getContext())) {
-            Admob.getInstance().loadInterAds(getContext(), getString(R.string.inter_budget_details), new InterCallback() {
-                @Override
-                public void onInterstitialLoad(InterstitialAd interstitialAd) {
-                    super.onInterstitialLoad(interstitialAd);
-                    Constant.interBudgetDetail = interstitialAd;
-                }
-            });
-        }
-
-    }
-
-
     private void setupBudgetManager() {
         budgetManager = new BudgetManager(requireContext());
         if (budgetManager.getTotalBudget() == 0) {
@@ -132,28 +119,9 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
         ivEditBalance.setOnClickListener(editBudgetListener);
 
         btnBudgetDetail.setOnClickListener(v -> {
-            if (Constant.interBudgetDetail != null) {
-                Admob.getInstance().showInterAds(getActivity(), Constant.interBudgetDetail, new InterCallback() {
-                    @Override
-                    public void onNextAction() {
-                        super.onNextAction();
-                        Intent intent = new Intent(requireContext(), BudgetDetailActivity.class);
-                        startActivity(intent);
-                    }
 
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        Intent intent = new Intent(getContext(), LoadNativeFullNew.class);
-                        intent.putExtra(LoadNativeFullNew.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_budget_details));
-                        startActivity(intent);
-                    }
-                });
-
-            } else {
-                Intent intent = new Intent(requireContext(), BudgetDetailActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(requireContext(), BudgetDetailActivity.class);
+            startActivity(intent);
 
         });
     }
@@ -303,7 +271,7 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
 
 
     private void loadNativeCollap(@Nullable final Runnable onLoaded) {
-        Log.d("Truowng", "loadNativeCollapA: ");
+        Log.d("budgetfragggggggggg", "loadNativeCollapA: ");
         frAdsHomeTop.removeAllViews();
         Admob.getInstance().loadNativeAd(requireContext(), getString(R.string.native_collap_home), new NativeCallback() {
             @Override
@@ -368,22 +336,42 @@ public class BudgetFragment extends Fragment implements BudgetAdapter.BudgetItem
     @Override
     public void onResume() {
         super.onResume();
-        loadInterBudgetDetail();
 
         if (!SharePreferenceUtils.isOrganic(requireContext())) {
             if (isFirstLoad) {
-                loadNativeCollap(() -> handler.postDelayed(() -> {
-                    loadNativeExpnad();
-                    handler.postDelayed(loadTask, 15000);
-                    isFirstLoad = false;
-                }, 1000));
+                loadNativeCollap(() -> {
+                    delayedLoadExpandTask = new Runnable() {
+                        @Override
+                        public void run() {
+                            loadNativeExpnad();
+                            isFirstLoad = false;
+                        }
+                    };
+                    handler.postDelayed(delayedLoadExpandTask, 1000);
+                });
             } else {
-                loadNativeCollap(null);
-                handler.postDelayed(loadTask, 15000);
+                loadNativeCollap(() -> {
+                    delayedLoadExpandTask = new Runnable() {
+                        @Override
+                        public void run() {
+                            loadNativeExpnad();
+                        }
+                    };
+                    handler.postDelayed(delayedLoadExpandTask, 10000);
+                });
             }
         } else {
-            frAdsHomeTop.removeAllViews();
             frAdsCollap.removeAllViews();
+            frAdsHomeTop.removeAllViews();
+        }
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(loadTask);
+        if (delayedLoadExpandTask != null) {
+            handler.removeCallbacks(delayedLoadExpandTask);
+            delayedLoadExpandTask = null;
         }
     }
 }

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
@@ -22,8 +23,11 @@ import com.mallegan.ads.callback.InterCallback;
 import com.mallegan.ads.callback.NativeCallback;
 import com.mallegan.ads.util.Admob;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.R;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.ads.ActivityFullCallback;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.ads.ActivityLoadNativeFullV2;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.Constant;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.LoadNativeFull;
+import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.LoadNativeFullNew;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SharePreferenceUtils;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SystemConfiguration;
 import com.moneymanager.expensetracker.moneytracker.spendingtracker.budgetplanner.walletmanager.utils.SystemUtil;
@@ -52,8 +56,6 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
             binding.frAds.setVisibility(View.VISIBLE);
         } else binding.frAds.setVisibility(View.GONE);
         dots = new ImageView[]{binding.cricle1, binding.cricle2, binding.cricle3, binding.cricle4};
-        SlideAdapter adapter = new SlideAdapter(this);
-        binding.viewPager2.setAdapter(adapter);
         setUpSlideIntro();
         binding.btnNext.setOnClickListener(this);
         binding.btnBack.setOnClickListener(this);
@@ -80,16 +82,38 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         if (v == binding.btnNext) {
-            int currentItem = binding.viewPager2.getCurrentItem();
-            if (currentItem < 3) {
-                binding.viewPager2.setCurrentItem(currentItem + 1);
-            } else {
+            if (binding.viewPager2.getCurrentItem() == 3) {
                 goToHome();
+
+                new Handler().postDelayed(() -> checkNextButtonStatus(true), 1500);
+            } else if (binding.viewPager2.getCurrentItem() == 2) {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() + 1);
+                if (!SharePreferenceUtils.isOrganic(this)) {
+                    checkNextButtonStatus(false);
+                    new Handler().postDelayed(() -> checkNextButtonStatus(true), 1500);
+                }
+            } else if (binding.viewPager2.getCurrentItem() == 1) {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() + 1);
+                if (!SharePreferenceUtils.isOrganic(this)) {
+                    checkNextButtonStatus(false);
+                    new Handler().postDelayed(() -> checkNextButtonStatus(true), 1500);
+                }
+            } else if (binding.viewPager2.getCurrentItem() == 0) {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() + 1);
+                if (!SharePreferenceUtils.isOrganic(this)) {
+                    checkNextButtonStatus(false);
+                    new Handler().postDelayed(() -> checkNextButtonStatus(true), 1500);
+                }
+            } else {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() + 1);
             }
         } else if (v == binding.btnBack) {
-            int currentItem = binding.viewPager2.getCurrentItem();
-            if (currentItem > 0) {
-                binding.viewPager2.setCurrentItem(currentItem - 1);
+            if (binding.viewPager2.getCurrentItem() == 3) {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() - 1);
+            } else if (binding.viewPager2.getCurrentItem() == 2) {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() - 1);
+            } else if (binding.viewPager2.getCurrentItem() == 1) {
+                binding.viewPager2.setCurrentItem(binding.viewPager2.getCurrentItem() - 1);
             }
         }
     }
@@ -100,54 +124,45 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
 
     public void goToHome() {
         String selectedCurrencyCode = SharePreferenceUtils.getSelectedCurrencyCode(this);
-        if (selectedCurrencyCode.isEmpty()) {
+        if (!SharePreferenceUtils.isOrganic(IntroActivity.this)) {
+            Admob.getInstance().loadAndShowInter(IntroActivity.this, getString(R.string.inter_intro), 0, 30000, new InterCallback() {
 
-            if (!SharePreferenceUtils.isOrganic(IntroActivity.this)) {
-                Admob.getInstance().loadSplashInterAds2(IntroActivity.this, getString(R.string.inter_intro), 0, new InterCallback() {
-                    @Override
-                    public void onNextAction() {
-                        super.onNextAction();
-                        startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+                @Override
+                public void onAdFailedToLoad(LoadAdError i) {
+                    super.onAdFailedToLoad(i);
+                    ActivityLoadNativeFullV2.open(IntroActivity.this, getString(R.string.native_full_intro), () -> {
+                        if (selectedCurrencyCode.isEmpty()){
+                            startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+                        }else {
+                            Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                }
 
-                    }
-
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        Intent intent = new Intent(IntroActivity.this, CurrencyUnitActivity.class);
-                        intent.putExtra(LoadNativeFull.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_intro));
-                        startActivity(intent);
-                    }
-                });
-            } else {
-                startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
-
-            }
-
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    ActivityLoadNativeFullV2.open(IntroActivity.this, getString(R.string.native_full_intro), () -> {
+                        if (selectedCurrencyCode.isEmpty()){
+                            startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+                        }else {
+                            Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                }
+            });
         } else {
-            if (!SharePreferenceUtils.isOrganic(IntroActivity.this)) {
-                Admob.getInstance().loadSplashInterAds2(IntroActivity.this, getString(R.string.inter_intro), 0, new InterCallback() {
-                    @Override
-                    public void onNextAction() {
-                        super.onNextAction();
-                        Intent intent = new Intent(IntroActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        Intent intent = new Intent(IntroActivity.this, LoadNativeFull.class);
-                        intent.putExtra(LoadNativeFull.EXTRA_NATIVE_AD_ID, getString(R.string.native_full_intro));
-                        startActivity(intent);
-                    }
-                });
-            } else {
+            if (selectedCurrencyCode.isEmpty()){
+                startActivity(new Intent(IntroActivity.this, CurrencyUnitActivity.class));
+            }else {
                 Intent intent = new Intent(IntroActivity.this, MainActivity.class);
                 startActivity(intent);
             }
 
         }
+
 
     }
 
@@ -287,11 +302,6 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        changeContentInit(0);
-    }
 
     private void loadNative1() {
         checkNextButtonStatus(false);
@@ -319,7 +329,6 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
                 binding.frAds1.removeAllViews();
                 binding.frAds1.addView(adView);
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
-
                 checkNextButtonStatus(true);
             }
         });
@@ -349,10 +358,7 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
                         binding.frAds3.addView(adView);
                         loadNative3 = true;
                         Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
-                        new Handler().postDelayed(() -> {
-                            checkNextButtonStatus(true);
-                        }, 1500);
-
+                        checkNextButtonStatus(true);
                     });
                 }
 
@@ -386,7 +392,6 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
                         binding.frAds2.setVisibility(View.GONE);
                         loadNative2 = false;
                         checkNextButtonStatus(true);
-
                     });
 
                 }
@@ -399,11 +404,7 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
                         binding.frAds2.removeAllViews();
                         binding.frAds2.addView(adView);
                         loadNative2 = true;
-                        Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
-                        new Handler().postDelayed(() -> {
-                            checkNextButtonStatus(true);
-                        }, 1500);
-
+                        checkNextButtonStatus(true);
                     });
 
                 }
@@ -445,10 +446,7 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
                     loadNative4 = true;
                     binding.frAds4.removeAllViews();
                     binding.frAds4.addView(adView);
-                    Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
-                    new Handler().postDelayed(() -> {
-                        checkNextButtonStatus(true);
-                    }, 1500);
+                    checkNextButtonStatus(true);
                 });
             }
         });
@@ -458,7 +456,5 @@ public class IntroActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();
     }
 }
